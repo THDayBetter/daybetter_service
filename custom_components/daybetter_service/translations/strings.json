@@ -1,0 +1,15 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "user_code": "User Code"
+        }
+      }
+    },
+    "error": {
+      "auth_failed": "Invalid authentication",
+      "connection_error": "Unable to connect to DayBetter"
+    }
+  }
+}

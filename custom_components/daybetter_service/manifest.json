@@ -1,12 +1,13 @@
 {
-  "domain": "daybetter_services",
-  "name": "DayBetter Services",
-  "version": "1.0.0",
-  "documentation": "https://example.com/daybetter-services",
-  "codeowners": ["@your-github-handle"],
-  "dependencies": [],
+  "domain": "daybetter",
+  "name": "DayBetter",
+  "version": "1.0.1",
+  "documentation": "https://www.home-assistant.io/integrations/daybetter",
+  "issue_tracker": "https://github.com/THDayBetter/daybetter_service/issues",
+  "codeowners": ["@your-username"],
   "requirements": [],
-  "logo": "https://daybetter-dev.s3.us-west-2.amazonaws.com/logo-2022-12-06-512.png",
   "iot_class": "cloud_polling",
-  "config_flow": true
+  "config_flow": true,
+  "logo": "icon.png",
+  "icon": "icon.png"
 }

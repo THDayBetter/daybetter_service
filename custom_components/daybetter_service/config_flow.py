@@ -1,10 +1,14 @@
-# config_flow.py
+"""Config flow for DayBetter integration."""
+from __future__ import annotations
+
 import logging
+from typing import Any
+
 import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from .const import DOMAIN, CONF_USER_CODE
+from .const import DOMAIN, CONF_USER_CODE, CONF_TOKEN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -12,24 +16,24 @@ DATA_SCHEMA = vol.Schema({
     vol.Required(CONF_USER_CODE): str,
 })
 
-
-class DayBetterServicesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Config flow for DayBetter Services (User Code style)."""
+class DayBetterConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+    """Handle a config flow for DayBetter."""
 
     VERSION = 1
-    MINOR_VERSION = 0
 
-    async def async_step_user(self, user_input=None):
-        """Handle a flow initialized by the user."""
+    async def async_step_user(
+        self, user_input: dict[str, Any] | None = None
+    ) -> config_entries.ConfigFlowResult:
+        """Handle the initial step."""
         errors = {}
 
         if user_input is not None:
             user_code = user_input[CONF_USER_CODE]
 
-            # 使用 aiohttp 调用 DayBetter 授权接口
+            # Use aiohttp to call the DayBetter authorization interface
             session = async_get_clientsession(self.hass)
             try:
-                # 假设这是 DayBetter 获取 token 的接口
+                # DayBetter's interface for obtaining tokens
                 resp = await session.post("https://cloud.v2.dbiot.link/daybetter/hass/api/v1.0/hass/integrate", json={
                     "hassCode": user_code
                 })
@@ -37,15 +41,15 @@ class DayBetterServicesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if resp.status == 200:
                     data = await resp.json()
                     if data.get("code") == 1 and data.get("data") and data["data"].get("hassCodeToken"):
-                        # 保存 token 等信息
+                        # Save information such as tokens
                         token = data["data"]["hassCodeToken"]
                         new_data = user_input.copy()
-                        new_data["hassCodeToken"] = token
+                        new_data[CONF_TOKEN] = token
 
-                        _LOGGER.info("DayBetter auth OK: %s", data.get("data"))
-                        # 保存 token 和 refresh_token 等信息
+                        _LOGGER.info("DayBetter auth OK")
+                        # Save information such as tokens and refresh_token
                         return self.async_create_entry(
-                            title="DayBetter Account",
+                            title="DayBetter",
                             data=new_data
                         )
                     else:

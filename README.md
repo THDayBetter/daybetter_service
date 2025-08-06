@@ -14,7 +14,7 @@ This custom component allows Home Assistant to communicate with Daybetter device
 Before installing this integration, you need to:
 
 1. Have a Daybetter account
-2. Register your devices with the Daybetter service
+2. Register your devices with the Daybetter services
 3. Obtain API credentials if required
 
 ## Installation
@@ -23,13 +23,13 @@ Before installing this integration, you need to:
 
 1. Install [HACS](https://hacs.xyz/docs/setup/download/)
 2. Add this repository as a custom repository in HACS
-3. Search for "Daybetter Service" in the Integrations section
+3. Search for "Daybetter Services" in the Integrations section
 4. Install the integration
 5. Restart Home Assistant
 
 ### Manual Installation
 
-1. Download the `custom_components/daybetter_service` folder
+1. Download the `custom_components/daybetter_services` folder
 2. Copy it to your Home Assistant's `custom_components` directory
 3. Restart Home Assistant
 
@@ -37,15 +37,15 @@ Before installing this integration, you need to:
 
 1. Go to Settings > Devices & Services
 2. Click "Add Integration"
-3. Search for "Daybetter Service"
+3. Search for "Daybetter Services"
 4. Enter your Daybetter credentials if required
 5. Complete the setup process
 
 ## Support
 
 If you encounter any issues or have questions:
-1. Check the [documentation](https://github.com/yourusername/daybetter_service/wiki)
-2. Open an [issue](https://github.com/yourusername/daybetter_service/issues) on GitHub
+1. Check the [documentation](https://github.com/THDayBetter/daybetter_service/wiki)
+2. Open an [issue](https://github.com/THDayBetter/daybetter_service/issues) on GitHub
 
 ## License
 
@@ -53,5 +53,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 [hacs-badge]: https://img.shields.io/badge/HACS-Custom-orange.svg
 [hacs-url]: https://github.com/custom-components/hacs
-[releases-badge]: https://img.shields.io/github/release/yourusername/daybetter_service.svg
-[releases-url]: https://github.com/yourusername/daybetter_service/releases
+[releases-badge]: https://img.shields.io/github/release/THDayBetter/daybetter_service.svg
+[releases-url]: https://github.com/THDayBetter/daybetter_service/releases
