@@ -1,13 +1,17 @@
 {
-  "domain": "daybetter",
-  "name": "DayBetter",
+  "domain": "daybetter_services",
+  "name": "DayBetter Services",
   "version": "1.0.1",
   "documentation": "https://www.home-assistant.io/integrations/daybetter",
   "issue_tracker": "https://github.com/THDayBetter/daybetter_service/issues",
-  "codeowners": ["@your-username"],
+  "codeowners": ["@THDayBetter"],
   "requirements": [],
   "iot_class": "cloud_polling",
   "config_flow": true,
   "logo": "icon.png",
-  "icon": "icon.png"
+  "icon": "icon.png",
+  "platforms": [
+    "light",
+    "switch"
+  ]
 }

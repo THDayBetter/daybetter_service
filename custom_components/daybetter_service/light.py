@@ -27,8 +27,20 @@ async def async_setup_entry(
     api = data["api"]
     devices = data["devices"]
 
-    # Only devices of type light are added here (for example, DeviceType==16 is the light strip, 14~28, 46)
-    lights = [DayBetterLight(api, dev) for dev in devices if dev.get("deviceType") == 16 or dev.get("deviceType") in range(14, 18) or dev.get("deviceType") == 46]
+    light_pids = {
+            "P01E", "P021", "P024", "P025", "P027", "P02B", "P032", "P035", "P037", "P038",
+            "P039", "P03B", "P03D", "P03E", "P03F", "P040", "P041", "P042", "P043", "P045",
+            "P046", "P048", "P049", "P04E", "P04F", "P050", "P051", "P054", "P055", "P056",
+            "P058", "P059", "P05A", "P05B", "P05C", "P05D", "P05E", "P064", "P067", "P069",
+            "P06F", "P072", "P073", "P074", "P076", "P078", "P079", "P07A", "P07B", "P07C",
+            "P07E", "P086"
+        }
+    
+    lights = [
+        DayBetterLight(api, dev) 
+        for dev in devices 
+        if dev.get("deviceMoldPid") in light_pids
+    ]    
     async_add_entities(lights)
 
 class DayBetterLight(LightEntity):
