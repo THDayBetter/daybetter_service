@@ -21,7 +21,7 @@ This custom integration enables Home Assistant to communicate with Daybetter dev
 The integration can be configured through the Home Assistant UI:
 1. Go to Settings -> Devices & Services
 2. Click "Add Integration"
-3. Search for "Daybetter Service"
+3. Search for "Daybetter Services"
 4. Enter your Daybetter account credentials
 
 ## Supported Devices
