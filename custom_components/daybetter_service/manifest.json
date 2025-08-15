@@ -8,8 +8,10 @@
   "requirements": [],
   "iot_class": "cloud_polling",
   "config_flow": true,
-  "logo": "icon.png",
-  "icon": "icon.png",
+  "logos": {
+    "small": "icons/logo_hass.png",
+    "large": "icons/logo_hass.png"
+  },
   "platforms": [
     "light",
     "switch"
