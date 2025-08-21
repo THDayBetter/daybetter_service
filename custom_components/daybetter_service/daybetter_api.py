@@ -53,13 +53,14 @@ class DayBetterApi:
                 "kelvin": kelvin
             }
         elif hs_color is not None:
-            r, g, b = color_hs_to_RGB(*hs_color)
+            h, s = hs_color
+            v = (brightness / 255) if brightness is not None else 1.0
             payload = {
                 "deviceName": device_name, 
                 "type": 3, 
-                "red": r,
-                "green": g,
-                "blue": b
+                "hue": h,
+                "saturation": s / 100,
+                "brightness": v
             }
         elif brightness is not None:
             payload = {
