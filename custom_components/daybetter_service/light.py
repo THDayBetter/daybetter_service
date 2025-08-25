@@ -27,14 +27,10 @@ async def async_setup_entry(
     api = data["api"]
     devices = data["devices"]
 
-    light_pids = {
-            "P01E", "P021", "P024", "P025", "P027", "P02B", "P032", "P035", "P037", "P038",
-            "P039", "P03B", "P03D", "P03E", "P03F", "P040", "P041", "P042", "P043", "P045",
-            "P046", "P048", "P049", "P04E", "P04F", "P050", "P051", "P054", "P055", "P056",
-            "P058", "P059", "P05A", "P05B", "P05C", "P05D", "P05E", "P05F", "P064", "P067", 
-            "P069", "P06F", "P072", "P073", "P074", "P076", "P078", "P079", "P07A", "P07B", 
-            "P07C", "P07E", "P086"
-        }
+    # Get light PIDs list
+    pids_data = await api.fetch_pids()
+    light_pids_str = pids_data.get("light", "")
+    light_pids = set(light_pids_str.split(",")) if light_pids_str else set()
     
     lights = [
         DayBetterLight(api, dev) 

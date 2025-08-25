@@ -21,9 +21,10 @@ async def async_setup_entry(
     api = data["api"]
     devices = data["devices"]
 
-    switch_pids = {
-        "P02D", "P033", "P034", "P047", "P052", "P063", "P07D", "P081"
-    }
+    # Get switch PIDs list
+    pids_data = await api.fetch_pids()
+    switch_pids_str = pids_data.get("switch", "")
+    switch_pids = set(switch_pids_str.split(",")) if switch_pids_str else set()
 
     switches = [
         DayBetterSwitch(api, dev) 

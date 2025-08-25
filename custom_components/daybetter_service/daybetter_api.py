@@ -30,6 +30,19 @@ class DayBetterApi:
                 _LOGGER.error("Failed to fetch devices: %s", await resp.text())
                 return []
 
+    async def fetch_pids(self) -> dict[str, Any]:
+        """Get list of PIDs for different device types."""
+        session = async_get_clientsession(self.hass)
+        url = "https://cloud.v2.dbiot.link/daybetter/hass/api/v1.0/hass/pids"
+        headers = {"Authorization": f"Bearer {self.token}"}
+        async with session.post(url, headers=headers) as resp:
+            if resp.status == 200:
+                data = await resp.json()
+                return data.get("data", {})
+            else:
+                _LOGGER.error("Failed to fetch PIDs: %s", await resp.text())
+                return {}
+            
     async def control_device(
         self, 
         device_name: str, 
