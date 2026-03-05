@@ -58,12 +58,10 @@ class DayBetterApi:
 
         # Priority: color temperature > color > brightness > switch
         if color_temp is not None:
-            # Convert mireds to Kelvin
-            kelvin = int(1000000 / color_temp)
             payload = {
-                "deviceName": device_name, 
+                "deviceName": device_name,
                 "type": 4,  # Type 4 is color temperature control
-                "kelvin": kelvin
+                "kelvin": color_temp
             }
         elif hs_color is not None:
             h, s = hs_color
