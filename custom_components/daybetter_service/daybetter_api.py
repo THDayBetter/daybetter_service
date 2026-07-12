@@ -5,7 +5,6 @@ import logging
 from typing import Any
 
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.util.color import color_hs_to_RGB
 
 _LOGGER = logging.getLogger("custom_components.daybetter_services")
 
@@ -25,6 +24,7 @@ class DayBetterApi:
         async with session.post(url, headers=headers) as resp:
             if resp.status == 200:
                 data = await resp.json()
+                _LOGGER.debug("RAW DEVICES RESPONSE: %s", data)
                 return data.get("data", [])
             else:
                 _LOGGER.error("Failed to fetch devices: %s", await resp.text())
@@ -79,6 +79,7 @@ class DayBetterApi:
     @staticmethod
     def _normalize_status_payload(raw: Any) -> list[dict[str, Any]]:
         """兼容 hass/status 返回 list 或 单 dict 或 {id: {...}} 映射."""
+        """Normalize hass/status responses to a list of dictionaries."""
         if raw is None:
             return []
         if isinstance(raw, list):
@@ -111,6 +112,7 @@ class DayBetterApi:
                           dev.get("deviceMoldPid"))
 
         # 尝试多种可能的 PID 键名（不同接口/固件可能不同）
+        # Try several possible PID keys for compatibility.
         sensor_pids_str = (
             pids_data.get("sensor", "")
             or pids_data.get("th", "")
@@ -217,6 +219,8 @@ class DayBetterApi:
         statuses: list[dict[str, Any]],
     ) -> None:
         """若仅一台传感器且主匹配未带上温湿度，则合并任意一条含读数的状态行（云端 deviceName 常不一致）。"""
+        # If there is only one sensor and no status matched, merge the
+        # first status payload that contains sensor readings.
         if len(merged) != 1:
             return
         if self._merged_has_temp_or_humi(merged[0]):
@@ -283,12 +287,12 @@ class DayBetterApi:
         return None
             
     async def control_device(
-        self, 
-        device_name: str, 
-        action: bool, 
-        brightness: int | None, 
-        hs_color: tuple[float, float] | None, 
-        color_temp: int | None
+        self,
+        device_name: str,
+        action: bool,
+        brightness: int | None,
+        hs_color: tuple[float, float] | None,
+        color_temp_kelvin: int | None,
     ) -> dict[str, Any]:
         """Control a device."""
         session = async_get_clientsession(self.hass)
@@ -296,13 +300,11 @@ class DayBetterApi:
         headers = {"Authorization": f"Bearer {self.token}"}
 
         # Priority: color temperature > color > brightness > switch
-        if color_temp is not None:
-            # Convert mireds to Kelvin
-            kelvin = int(1000000 / color_temp)
+        if color_temp_kelvin is not None:
             payload = {
-                "deviceName": device_name, 
-                "type": 4,  # Type 4 is color temperature control
-                "kelvin": kelvin
+                "deviceName": device_name,
+                "type": 4,
+                "kelvin": color_temp_kelvin,
             }
         elif hs_color is not None:
             h, s = hs_color
@@ -312,17 +314,25 @@ class DayBetterApi:
                 "type": 3, 
                 "hue": h,
                 "saturation": s / 100,
-                "brightness": v
+                "brightness": v,
             }
         elif brightness is not None:
             payload = {
                 "deviceName": device_name, 
                 "type": 2, 
-                "brightness": brightness
+                "brightness": brightness,
             }
         else:
             # Type 1 control switch is used by default
-            payload = {"deviceName": device_name, "type": 1, "on": action}
-            
+            payload = {
+                "deviceName": device_name, "
+                type": 1, 
+                "on": action,
+            }
+
+        _LOGGER.debug("DayBetter request payload: %s", payload)
+
         async with session.post(url, headers=headers, json=payload) as resp:
-            return await resp.json()
+            data = await resp.json()
+            _LOGGER.debug("DayBetter response: %s", data)
+            return data
