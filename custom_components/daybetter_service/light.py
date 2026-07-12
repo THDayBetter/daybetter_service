@@ -64,7 +64,7 @@ class DayBetterLight(LightEntity):
         self._is_on = device.get("deviceState", 0) == 1
         self._attr_brightness = 255
         self._attr_hs_color = (0.0, 0.0)
-        self._attr_color_temp_kelvin = 3333  # Default color temperature (mireds unit)
+        self._attr_color_temp_kelvin = 4000  # Default color temperature (Kelvin)
         
         device_features = device.get("deviceFeatures", [])
         _LOGGER.debug("DayBetter Device: %s", device)
@@ -74,6 +74,9 @@ class DayBetterLight(LightEntity):
         # - 只要支持 HS，就只声明 HS（不再额外声明 BRIGHTNESS）
         # - 否则只声明 COLOR_TEMP
         # - 否则只声明 BRIGHTNESS
+        # Advertise the most capable color modes supported by the device.
+        # Home Assistant validates supported_color_modes, so only expose
+        # capabilities the device actually supports.
         supported_modes: set[ColorMode] = set()
 
         if 3 in device_features:
@@ -111,8 +114,6 @@ class DayBetterLight(LightEntity):
             self._attr_supported_color_modes,
             self._attr_color_mode,
         )
-            
-        self._device_features = device_features
 
     @property
     def is_on(self) -> bool:
@@ -125,7 +126,6 @@ class DayBetterLight(LightEntity):
 
     @property
     def hs_color(self) -> tuple[float, float] | None:
-        _LOGGER.debug("hs_color property called: %s", self._attr_hs_color)
         """Return the hue and saturation color value."""
         if self._attr_supported_color_modes and ColorMode.HS in self._attr_supported_color_modes:
             return self._attr_hs_color
@@ -165,15 +165,15 @@ class DayBetterLight(LightEntity):
             self._device["deviceName"], 
             True, 
             brightness if has_brightness else None,
-            hs_color if self._attr_supported_color_modes and ColorMode.HS in self._attr_supported_color_modes else None,
-            (
-                color_temp_kelvin
-                if (
-                    color_temp_kelvin is not None
-                    and ColorMode.COLOR_TEMP in self._attr_supported_color_modes
+            hs_color 
+            if self._attr_supported_color_modes and ColorMode.HS in self._attr_supported_color_modes
+            else None,
+            color_temp_kelvin
+            if (
+                color_temp_kelvin is not None
+                and ColorMode.COLOR_TEMP in self._attr_supported_color_modes
                 )
-                else None
-            )
+            else None,
         )
         
         # Update status based on control results
