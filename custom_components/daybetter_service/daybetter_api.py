@@ -25,6 +25,7 @@ class DayBetterApi:
         async with session.post(url, headers=headers) as resp:
             if resp.status == 200:
                 data = await resp.json()
+                _LOGGER.debug("RAW DEVICES RESPONSE: %s", data)
                 return data.get("data", [])
             else:
                 _LOGGER.error("Failed to fetch devices: %s", await resp.text())
@@ -288,7 +289,7 @@ class DayBetterApi:
         action: bool, 
         brightness: int | None, 
         hs_color: tuple[float, float] | None, 
-        color_temp: int | None
+        color_temp_kelvin: int | None,
     ) -> dict[str, Any]:
         """Control a device."""
         session = async_get_clientsession(self.hass)
@@ -296,13 +297,11 @@ class DayBetterApi:
         headers = {"Authorization": f"Bearer {self.token}"}
 
         # Priority: color temperature > color > brightness > switch
-        if color_temp is not None:
-            # Convert mireds to Kelvin
-            kelvin = int(1000000 / color_temp)
+        if color_temp_kelvin is not None:
             payload = {
-                "deviceName": device_name, 
-                "type": 4,  # Type 4 is color temperature control
-                "kelvin": kelvin
+                "deviceName": device_name,
+                "type": 4,
+                "kelvin": color_temp_kelvin,
             }
         elif hs_color is not None:
             h, s = hs_color
@@ -324,5 +323,11 @@ class DayBetterApi:
             # Type 1 control switch is used by default
             payload = {"deviceName": device_name, "type": 1, "on": action}
             
+        #async with session.post(url, headers=headers, json=payload) as resp:
+        #    return await resp.json()
+        _LOGGER.debug("DayBetter request payload: %s", payload)
+
         async with session.post(url, headers=headers, json=payload) as resp:
-            return await resp.json()
+            data = await resp.json()
+            _LOGGER.debug("DayBetter response: %s", data)
+            return data
