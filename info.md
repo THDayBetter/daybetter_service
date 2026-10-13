@@ -26,4 +26,15 @@ The integration can be configured through the Home Assistant UI:
 
 ## Supported Devices
 
-This integration supports various Daybetter smart devices that are compatible with the Daybetter IoT platform.
+The following DayBetter device models are supported:
+
+| | | | |
+|---|---|---|---|
+| P032 | P041 | P042 | P048 |
+| P04F | P051 | P056 | P059 |
+| P05F | P074 | P076 | P079 |
+| P07A | P08B | P033 | P047 |
+| P052 | P075 | P081 | P09C |
+| P093 | P0D0 | | |
+
+For all supported devices, you can find the **Home Assistant API credential** on the corresponding device's settings page in the **DayBetter APP**. You will need this credential when adding the integration in Home Assistant.

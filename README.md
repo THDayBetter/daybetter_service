@@ -9,13 +9,28 @@ Custom integration for controlling Daybetter devices in Home Assistant.
 
 This custom component allows Home Assistant to communicate with Daybetter devices using the official Daybetter API. It provides control and monitoring capabilities for your Daybetter-compatible smart devices.
 
+## Supported Devices
+
+The following DayBetter device models are supported:
+
+| | | | |
+|---|---|---|---|
+| P032 | P041 | P042 | P048 |
+| P04F | P051 | P056 | P059 |
+| P05F | P074 | P076 | P079 |
+| P07A | P08B | P033 | P047 |
+| P052 | P075 | P081 | P09C |
+| P093 | P0D0 | | |
+
+For all supported devices, you can find the **Home Assistant API credential** on the corresponding device's settings page in the **DayBetter APP**. You will need this credential when adding the integration in Home Assistant.
+
 ## Prerequisites
 
 Before installing this integration, you need to:
 
 1. Have a Daybetter account
 2. Register your devices with the Daybetter services
-3. Obtain API credentials if required
+3. Obtain the Home Assistant API credential from the DayBetter APP (see [Supported Devices](#supported-devices))
 
 ## Installation
 
@@ -38,10 +53,10 @@ Before installing this integration, you need to:
 1. Go to Settings > Devices & Services
 2. Click "Add Integration"
 3. Search for "Daybetter Services"
-4. Enter your Daybetter credentials if required
+4. Enter the **Home Assistant API credential** shown on the device's settings page in the DayBetter APP
 5. Complete the setup process
 
-## History & statistics (温湿度、电量曲线)
+## History & statistics (Temperature / Humidity / Battery curves)
 
 Temperature, humidity, and battery sensors use `state_class: measurement` and **`force_update`** so Home Assistant’s **Recorder** can store a point on each poll (~5 minutes). History and long‑term statistics appear from the moment the entity first reports a numeric state—there is no retroactive data from the DayBetter cloud inside HA.
 
